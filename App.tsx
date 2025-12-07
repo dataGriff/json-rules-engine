@@ -118,11 +118,98 @@ export default function App() {
   const step = steps[stepIndex];
 
   if (blocked) {
-    return <h1>❌ BLOCKED: {blocked}</h1>;
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
+      }}>
+        <div style={{
+          background: 'white',
+          padding: '3rem',
+          borderRadius: '16px',
+          boxShadow: '0 25px 50px rgba(0,0,0,0.2)',
+          textAlign: 'center',
+          maxWidth: '500px',
+          margin: '0 20px'
+        }}>
+          <div style={{
+            fontSize: '4rem',
+            marginBottom: '1rem'
+          }}>🚫</div>
+          <h1 style={{
+            color: '#dc3545',
+            marginBottom: '1rem',
+            fontSize: '1.8rem',
+            fontWeight: '600'
+          }}>Application Blocked</h1>
+          <p style={{
+            color: '#6c757d',
+            fontSize: '1.1rem',
+            lineHeight: '1.5'
+          }}>{blocked}</p>
+        </div>
+      </div>
+    );
   }
 
   if (!step) {
-    return <h1>✅ Flow Complete</h1>;
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
+      }}>
+        <div style={{
+          background: 'white',
+          padding: '3rem',
+          borderRadius: '16px',
+          boxShadow: '0 25px 50px rgba(0,0,0,0.2)',
+          textAlign: 'center',
+          maxWidth: '500px',
+          margin: '0 20px'
+        }}>
+          <div style={{
+            fontSize: '4rem',
+            marginBottom: '1rem'
+          }}>🎉</div>
+          <h1 style={{
+            color: '#28a745',
+            marginBottom: '1rem',
+            fontSize: '1.8rem',
+            fontWeight: '600'
+          }}>Application Complete!</h1>
+          <p style={{
+            color: '#6c757d',
+            fontSize: '1.1rem',
+            lineHeight: '1.5',
+            marginBottom: '2rem'
+          }}>Thank you for completing the form. Your information has been processed.</p>
+          <div style={{
+            background: '#f8f9fa',
+            padding: '1rem',
+            borderRadius: '8px',
+            textAlign: 'left'
+          }}>
+            <h3 style={{ marginBottom: '0.5rem', color: '#495057' }}>Summary:</h3>
+            <pre style={{
+              fontSize: '0.9rem',
+              margin: 0,
+              whiteSpace: 'pre-wrap',
+              color: '#6c757d'
+            }}>
+              {JSON.stringify(answers, null, 2)}
+            </pre>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   async function onSubmit({ formData }: any) {
@@ -149,20 +236,172 @@ export default function App() {
   }
 
   return (
-    <div style={{ maxWidth: 500, margin: "40px auto", fontFamily: "sans-serif" }}>
-      <h2>{step.title}</h2>
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      padding: '2rem 1rem',
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
+    }}>
+      <div style={{
+        maxWidth: '600px',
+        margin: '0 auto'
+      }}>
+        {/* Progress Header */}
+        <div style={{
+          background: 'rgba(255,255,255,0.1)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '12px',
+          padding: '1.5rem',
+          marginBottom: '2rem',
+          border: '1px solid rgba(255,255,255,0.2)'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '1rem'
+          }}>
+            <h1 style={{
+              color: 'white',
+              margin: 0,
+              fontSize: '1.5rem',
+              fontWeight: '600'
+            }}>Insurance Application</h1>
+            <div style={{
+              background: 'rgba(255,255,255,0.2)',
+              padding: '0.5rem 1rem',
+              borderRadius: '20px',
+              color: 'white',
+              fontSize: '0.9rem',
+              fontWeight: '500'
+            }}>
+              Step {stepIndex + 1} of {flowConfig.steps.length}
+            </div>
+          </div>
+          
+          {/* Progress Bar */}
+          <div style={{
+            background: 'rgba(255,255,255,0.2)',
+            height: '6px',
+            borderRadius: '3px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              background: 'linear-gradient(90deg, #00d4ff, #090979)',
+              height: '100%',
+              width: `${((stepIndex + 1) / flowConfig.steps.length) * 100}%`,
+              transition: 'width 0.3s ease'
+            }} />
+          </div>
+        </div>
 
-      <Form
-        schema={step.schema}
-        uiSchema={step.uiSchema}
-        formData={answers[step.id]}
-        validator={validator}
-        onSubmit={onSubmit}
-      />
+        {/* Main Form Card */}
+        <div style={{
+          background: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 25px 50px rgba(0,0,0,0.2)',
+          overflow: 'hidden'
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            padding: '2rem',
+            color: 'white',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontSize: '2.5rem',
+              marginBottom: '0.5rem'
+            }}>
+              {step.id === 'driver' ? '👤' : '🚗'}
+            </div>
+            <h2 style={{
+              margin: 0,
+              fontSize: '1.5rem',
+              fontWeight: '600'
+            }}>{step.title}</h2>
+          </div>
 
-      <pre style={{ background: "#f4f4f4", padding: 10 }}>
-        {JSON.stringify(answers, null, 2)}
-      </pre>
+          <div style={{
+            padding: '2rem'
+          }}>
+            <Form
+              schema={step.schema}
+              uiSchema={{
+                ...step.uiSchema,
+                "ui:submitButtonOptions": {
+                  submitText: stepIndex === steps.length - 1 ? "Complete Application" : "Continue",
+                  norender: false,
+                  props: {
+                    style: {
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      border: 'none',
+                      color: 'white',
+                      padding: '12px 32px',
+                      borderRadius: '8px',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      width: '100%',
+                      marginTop: '1rem',
+                      transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                    },
+                    onMouseEnter: (e: any) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 10px 25px rgba(102, 126, 234, 0.4)';
+                    },
+                    onMouseLeave: (e: any) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = 'none';
+                    }
+                  }
+                }
+              }}
+              formData={answers[step.id]}
+              validator={validator}
+              onSubmit={onSubmit}
+            />
+          </div>
+        </div>
+
+        {/* Debug Panel - Collapsible */}
+        {Object.keys(answers).length > 0 && (
+          <div style={{
+            marginTop: '2rem',
+            background: 'rgba(255,255,255,0.1)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '12px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            overflow: 'hidden'
+          }}>
+            <details style={{ color: 'white' }}>
+              <summary style={{
+                padding: '1rem',
+                cursor: 'pointer',
+                fontWeight: '500',
+                fontSize: '0.9rem'
+              }}>
+                📊 Debug: View Form Data
+              </summary>
+              <div style={{
+                background: 'rgba(0,0,0,0.2)',
+                padding: '1rem'
+              }}>
+                <pre style={{
+                  background: 'rgba(0,0,0,0.3)',
+                  color: 'white',
+                  padding: '1rem',
+                  borderRadius: '8px',
+                  fontSize: '0.8rem',
+                  overflow: 'auto',
+                  margin: 0
+                }}>
+                  {JSON.stringify(answers, null, 2)}
+                </pre>
+              </div>
+            </details>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

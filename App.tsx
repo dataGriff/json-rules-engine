@@ -102,17 +102,6 @@ const flowConfig = {
         params: { stepId: "vehicle" }
       }
     },
-
-    {
-      conditions: {
-        all: [{ fact: "driver.age", operator: "greaterThan", value: 30 }]
-      },
-      event: {
-        type: "SHOW_FIELD",
-        params: { stepId: "driver", fieldId: "homeowner" }
-      }
-    },
-
     {
       conditions: {
         all: [{ fact: "driver.age", operator: "greaterThanInclusive", value: 30 }]
@@ -143,9 +132,7 @@ export default function App() {
   const [answers, setAnswers] = useState<any>({});
   const [skippedSteps, setSkippedSteps] = useState<string[]>([]);
   const [blocked, setBlocked] = useState<string | null>(null);
-  const [hiddenFields, setHiddenFields] = useState<{ [stepId: string]: string[] }>({
-    driver: ["homeowner"]
-  });
+  const [hiddenFields, setHiddenFields] = useState<{ [stepId: string]: string[] }>({});
 
   const steps = flowConfig.steps.filter(
     step => !skippedSteps.includes(step.id)
@@ -291,25 +278,36 @@ export default function App() {
 ============================ */
 
 function flattenFacts(obj: any, prefix = "", res: any = {}) {
-  // ✅ Initialize once at root only
+  // ✅ Initialize fact keys dynamically from schema (always run this for the root call)
   if (!prefix) {
-    Object.assign(res, {
-      "driver.age": undefined,
-      "driver.dui": undefined,
-      "driver.homeowner": undefined,
-      "vehicle.type": undefined,
-      "vehicle.year": undefined
+    // Generate all possible fact keys from the flow configuration
+    flowConfig.steps.forEach(step => {
+      Object.keys(step.schema.properties).forEach(fieldKey => {
+        res[`${step.id}.${fieldKey}`] = undefined;
+      });
     });
-  }
+    
+    // Now process the actual object
+    for (const key in obj) {
+      const value = obj[key];
+      
+      if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+        flattenFacts(value, key, res);
+      } else {
+        res[key] = value;
+      }
+    }
+  } else {
+    // For nested calls, just process the object
+    for (const key in obj) {
+      const value = obj[key];
+      const newKey = `${prefix}.${key}`;
 
-  for (const key in obj) {
-    const value = obj[key];
-    const newKey = prefix ? `${prefix}.${key}` : key;
-
-    if (typeof value === "object" && value !== null) {
-      flattenFacts(value, newKey, res);
-    } else {
-      res[newKey] = value;
+      if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+        flattenFacts(value, newKey, res);
+      } else {
+        res[newKey] = value;
+      }
     }
   }
 

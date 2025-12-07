@@ -12,6 +12,7 @@ const flowConfig = {
     {
       id: "driver",
       title: "Driver Info",
+      defaultHiddenFields: ["homeowner"], // Fields hidden by default
 
       schema: {
         type: "object",
@@ -124,6 +125,22 @@ const flowConfig = {
 };
 
 /* ============================
+   ✅ INITIALIZE HIDDEN FIELDS
+============================ */
+
+function getInitialHiddenFields() {
+  const hiddenFields: { [stepId: string]: string[] } = {};
+  
+  flowConfig.steps.forEach(step => {
+    if (step.defaultHiddenFields && step.defaultHiddenFields.length > 0) {
+      hiddenFields[step.id] = [...step.defaultHiddenFields];
+    }
+  });
+  
+  return hiddenFields;
+}
+
+/* ============================
    ✅ APP
 ============================ */
 
@@ -132,7 +149,7 @@ export default function App() {
   const [answers, setAnswers] = useState<any>({});
   const [skippedSteps, setSkippedSteps] = useState<string[]>([]);
   const [blocked, setBlocked] = useState<string | null>(null);
-  const [hiddenFields, setHiddenFields] = useState<{ [stepId: string]: string[] }>({});
+  const [hiddenFields, setHiddenFields] = useState<{ [stepId: string]: string[] }>(getInitialHiddenFields());
 
   const steps = flowConfig.steps.filter(
     step => !skippedSteps.includes(step.id)
